@@ -9,6 +9,7 @@ const IndexCustome = styled.div`
   font-family: Abel;
   font-weight: lighter;
   font-size: 16px;
+  transition: all .3000ms;
 `;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

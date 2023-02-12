@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import colors from "../../utils/colors";
 import CreateTaskModal from "../Modal/CreateTaskModal";
+import Card from "../Card/Card";
 
 //........Custome this page...............
 const HeaderTodoList = styled.div`
@@ -9,26 +10,27 @@ const HeaderTodoList = styled.div`
   width: 100%;
   background-color: ${colors.backgroundLight};
 `;
-
-const BoxTaskList = styled.li`
-  height: 20vh;
-  width: 20vh;
-  list-style: none;
-  cursor: pointer;
-  border-radius: 1rem;
-  :& hover{
-    background-colors: ${colors.backgroundLight};
-    
-}
-`;
-const BoxTask = styled.li`
-    display: flex;
-    justify-content: center;
+const BoxTask = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: #F6F7F8;
 `;
 //.....JSX code...........................
 function TodoList() {
   const [modal, setModal] = useState(false);
   const [taskList, setTaskList] = useState([]);
+
+  //.......DataManagement.................
+  useEffect(() => {
+    const arr = localStorage.getItem("taskList");
+    if (arr) {
+      const obj = JSON.parse(arr);
+      setTaskList(obj);
+    }
+  }, []);
 
   const toggle = () => {
     setModal(!modal);
@@ -37,8 +39,9 @@ function TodoList() {
   const saveTask = (taskObj) => {
     let tempList = taskList;
     tempList.push(taskObj);
-    setTaskList(tempList);
+    localStorage.setItem("taskList", JSON.stringify(tempList));
     setModal(false);
+    setTaskList(tempList);
   };
 
   return (
@@ -52,9 +55,9 @@ function TodoList() {
           Ajouter une tâche
         </button>
       </HeaderTodoList>
-      <BoxTask className="container text-center">
-        {taskList.map((obj) => (
-          <BoxTaskList className="shadow m-3">{obj.Name}</BoxTaskList>
+      <BoxTask>
+        {taskList.map((obj, index) => (
+          <Card taskObj={obj} index={index} className="shadow m-3" />
         ))}
       </BoxTask>
       <CreateTaskModal toggle={toggle} modal={modal} save={saveTask} />
